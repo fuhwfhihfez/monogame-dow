@@ -21,11 +21,3 @@
 /processorParam:Version=3.8.5.1
 /build:Font.spritefont
 
-#begin TextOutline.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/processorParam:Defines=
-/processorParam:Version=3.8.5.1
-/build:TextOutline.fx
-

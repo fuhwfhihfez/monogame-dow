@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Main;
+namespace Dow.Main;
 
 static class Values
 {

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-using Main;
+using Dow.Main;
 
-namespace UI.Utils.Alignment;
+namespace Dow.UI.Utils.Alignment;
 
-class UIList
+public class UIList
 {
     public List<IUIElement> Elements = [];
     public Vector2 Origin;
@@ -13,7 +13,7 @@ class UIList
     public int MaxCount;
     public float Spacing;
 
-    public UIList(Vector2 origin, float maxHeight = float.PositiveInfinity, int maxCount = int.MaxValue, float spacing = 0f, List<IUIElement> elements = null)
+    public UIList(Vector2 origin, float spacing = 0f, float maxHeight = float.PositiveInfinity, int maxCount = int.MaxValue, List<IUIElement> elements = null)
     {
         Origin = origin;
         Spacing = spacing;
@@ -33,13 +33,19 @@ class UIList
         {
             IUIElement element = Elements[i];
 
-            // Skip elements that exceed the list's height
+            // // Skip elements that exceed the list's height
             if (offset + element.Size.Y > MaxHeight)
+            {
+                element.Visible = false;
                 continue;
+            }
 
             // Skip elements that exceed the screen height
             if (Origin.Y + offset + element.Size.Y > Values.ScreenDims.Y)
+            {
+                element.Visible = false;
                 continue;
+            }
 
             element.Position = new Vector2(Origin.X, Origin.Y + offset);
             offset += element.Size.Y + Spacing;

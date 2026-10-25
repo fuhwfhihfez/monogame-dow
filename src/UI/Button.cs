@@ -1,13 +1,15 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
-namespace UI;
+using Dow.UI.Utils.Alignment;
 
-class Button : IUIElement
+namespace Dow.UI;
+
+public class Button : IUIElement
 {
+    public UIContainer Parent { get; set; }
     public Frame Frame;
     public Text Text;
     public string TextString
@@ -15,6 +17,7 @@ class Button : IUIElement
         get => Text.TextString;
         set => Text.TextString = value;
     }
+    public int ZIndex { get; set; }
     public Vector2 Position
     {
         get => Frame.Rectangle.Position;
@@ -30,19 +33,20 @@ class Button : IUIElement
         set => Frame.Rectangle.Size = value;
     }
     public bool Visible { get; set; }
+    public Vector2 Anchor { get; set; }
 
-    public Action OnClick;
-    public Action<bool> OnHover;
-    private MouseState lastMouseState;
-    private bool lastHoverState = false;
-    
-    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
+    public Action _OnClick;
+    public Action<bool> _OnHover;
+    public Vector2 DrawPosition => Position - Size * Anchor;
+
+    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, int zIndex = 0, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
     {
 
         Frame = new Frame(
             position,
             size,
             backgroundColor,
+            zIndex-1,
             backgroundOpacity
         );
 
@@ -50,7 +54,8 @@ class Button : IUIElement
             textString,
             Vector2.Zero,
             font,
-            textColor
+            textColor,
+            zIndex
         );
 
         UpdateTextPosition();
@@ -58,12 +63,15 @@ class Button : IUIElement
         Position = position;
         Size = size;
 
-        OnClick = onClick;
-        OnHover = onHover;
+        _OnClick = onClick;
+        _OnHover = onHover;
+
+        Anchor = AnchorPosition.TopLeft;
 
         Visible = true;
 
-        UI.Collection.Elements.Add(this);
+        Collection.Buttons.Add(this);
+        Collection.Elements.Add(this);
     }
 
     void UpdateTextPosition()
@@ -75,26 +83,14 @@ class Button : IUIElement
         Text.Position = Position + padding - offset;
     }
 
-    public void Update()
+    public void OnHover(bool Enter)
     {
-        MouseState mouse = Mouse.GetState();
+        _OnHover?.Invoke(Enter);
+    }
 
-        bool isHovering = Frame.Rectangle.Contains(mouse.Position.ToVector2());
-
-        if (isHovering != lastHoverState)
-        {
-            OnHover?.Invoke(isHovering);
-            lastHoverState = isHovering;
-        }
-
-        if (isHovering &&
-            mouse.LeftButton == ButtonState.Released &&
-            lastMouseState.LeftButton == ButtonState.Pressed)
-        {
-            OnClick?.Invoke();
-        }
-
-        lastMouseState = mouse;
+    public void OnClick()
+    {
+        _OnClick?.Invoke();
     }
 
     public void Draw(SpriteBatch _spriteBatch)

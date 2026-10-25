@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Library;
+namespace Dow.Main;
 
 public static class Program
 {

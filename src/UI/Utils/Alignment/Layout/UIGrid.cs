@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-using Main;
+using Dow.Main;
 
-namespace UI.Utils.Alignment;
+namespace Dow.UI.Utils.Alignment;
 
-enum GridMode
+public enum GridMode
 {
     Fixed,
     Automatic
 }
 
-class UIGrid
+public class UIGrid
 {
     public List<IUIElement> Elements = [];
     public Vector2 Origin;
@@ -21,6 +21,7 @@ class UIGrid
     public Vector2 Bounds;
     public int MaxXCount;
     public int MaxYCount;
+    private List<IUIElement> UneligibleElements;
 
     public UIGrid(GridMode mode, Vector2 origin, Vector2 spacing = default, Vector2 bounds = default, int maxXCount = int.MaxValue, int maxYCount = int.MaxValue, List<IUIElement> elements = null)
     {
@@ -40,6 +41,8 @@ class UIGrid
 
     public void Update()
     {
+        UneligibleElements = [.. Elements];
+
         switch (Mode)
         {
             case GridMode.Fixed:
@@ -66,6 +69,9 @@ class UIGrid
                         maxYSize = Math.Max(maxYSize, element.Size.Y);
 
                         index++;
+                        
+                        element.Visible = true;
+                        UneligibleElements.Remove(element);
                     }
 
                     // Update Y offset after every row
@@ -91,12 +97,14 @@ class UIGrid
                         // Start a new row for too wide elements
                         if (xOffset + element.Size.X > Bounds.X)
                         {
+                            index++;
                             break;
                         }
 
                         // Start a new row for elements that go off-screen
                         if (Origin.X + xOffset + element.Size.X > Values.ScreenDims.X)
                         {
+                            index++;
                             break;
                         }
 
@@ -124,6 +132,9 @@ class UIGrid
                         maxYSize = Math.Max(maxYSize, element.Size.Y);
 
                         index++;
+
+                        element.Visible = true;
+                        UneligibleElements.Remove(element);
                     }
 
                     // Update Y offset after every row
@@ -131,6 +142,11 @@ class UIGrid
                 }
                 break;
             }
+        }
+
+        foreach (IUIElement uneligibleElement in UneligibleElements)
+        {
+            uneligibleElement.Visible = false;
         }
     }
 

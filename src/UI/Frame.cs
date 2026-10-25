@@ -1,13 +1,16 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
-namespace UI;
+namespace Dow.UI;
 
-class Frame : IUIElement
+public class Frame : IUIElement
 {
+    public UIContainer Parent { get; set; }
     public RectangleF Rectangle;
+    public int ZIndex { get; set; }
     public Vector2 Position
     {
         get => Rectangle.Position;
@@ -19,6 +22,7 @@ class Frame : IUIElement
         set => Rectangle.Size = value;
     }
     public bool Visible { get; set; }
+    public Vector2 Anchor { get; set; }
 
     public Color BackgroundColor;
     private float _opacity = 1f;
@@ -28,7 +32,7 @@ class Frame : IUIElement
         set => _opacity = Math.Clamp(value, 0f, 1f);
     }
 
-    public Frame(Vector2 position, Vector2 size, Color backgroundColor, float opacity = 1f)
+    public Frame(Vector2 position, Vector2 size, Color backgroundColor, int zIndex = 0, float opacity = 1f)
     {
         Rectangle = new RectangleF(
             position.X,
@@ -37,13 +41,16 @@ class Frame : IUIElement
             size.Y
         );
 
-        Opacity = (byte)(opacity*255);
+        Opacity = opacity;
 
         BackgroundColor = backgroundColor * Opacity;
 
+        ZIndex = zIndex;
+
         Visible = true;
 
-        UI.Collection.Elements.Add(this);
+        Collection.Frames.Add(this);
+        Collection.Elements.Add(this);
     }
 
     public void Draw(SpriteBatch _spriteBatch)

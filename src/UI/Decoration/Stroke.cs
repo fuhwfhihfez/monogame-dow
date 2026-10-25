@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace UI.Decoration;
+namespace Dow.UI.Decoration;
 
-class Stroke
+public class Stroke
 {
     public float Width;
     public Color Color;
