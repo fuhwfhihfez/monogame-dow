@@ -57,21 +57,19 @@ class Game1 : Game
             )
         ];
 
-        UIContainer container = new UIContainer(
+        new UIContainer(
             children,
             position,
             new Vector2(350, 350),
             Color.Gray,
-            1,
             0.5f
         );
 
         new Frame(
             Position.ScreenRel(0.5f, 0.5f),
             new Vector2(150, 150),
-            Color.Gray,
-            10,
-            0.5f
+            Color.Black,
+            10
         );
     }
 

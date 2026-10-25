@@ -29,7 +29,10 @@ public class UIContainer : IUIElement
         get => BackgroundFrame.Size;
         set => BackgroundFrame.Size = value;
     }
-    public int ZIndex { get; set; }
+    public int ZIndex {
+        get => BackgroundFrame.ZIndex;
+        set => BackgroundFrame.ZIndex = value;
+    }
     private bool _visible;
     public bool Visible {
         get => _visible;
@@ -47,7 +50,7 @@ public class UIContainer : IUIElement
 
     private Vector2 _dragOffset;
 
-    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, int zIndex = 0, float opacity = 1f)
+    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, float opacity = 1f)
     {
         Children = children;
 
@@ -57,19 +60,21 @@ public class UIContainer : IUIElement
             position,
             size,
             backgroundColor,
-            zIndex,
+            0,
             opacity
         );
 
         Anchor = AnchorPosition.Center;
 
-        ZIndex = zIndex;
+        ZIndex = 0;
 
         foreach (IUIElement child in children)
         {
             child.Parent = this;
-        }
 
+            if (child.ZIndex < ZIndex)
+                ZIndex = child.ZIndex - 1;
+        }
         BackgroundFrame.Parent = this;
 
         Collection.Elements.Add(this);
