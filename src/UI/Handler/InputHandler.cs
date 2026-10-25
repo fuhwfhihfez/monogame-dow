@@ -46,6 +46,11 @@ public static class InputHandler
         MouseState mouse = Mouse.GetState();
         Vector2 mousePos = mouse.Position.ToVector2();
 
+        if (hoveredElement != null && hoveredElement.Parent != null)
+        {
+            hoveredElement = hoveredElement.Parent;
+        }
+
         bool justPressed =
             mouse.LeftButton == ButtonState.Pressed &&
             lastMouseState.LeftButton == ButtonState.Released;

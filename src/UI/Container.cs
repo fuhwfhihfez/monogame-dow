@@ -63,7 +63,14 @@ public class UIContainer : IUIElement
 
         Anchor = AnchorPosition.Center;
 
-        ZIndex = zIndex + 1;
+        ZIndex = zIndex;
+
+        foreach (IUIElement child in children)
+        {
+            child.Parent = this;
+        }
+
+        BackgroundFrame.Parent = this;
 
         Collection.Elements.Add(this);
     }
