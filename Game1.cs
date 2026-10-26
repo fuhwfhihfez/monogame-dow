@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Collections.Generic;
 
-using MonoGame.Extended;
-
 using Dow.UI;
 using Dow.UI.Utils.Alignment;
 

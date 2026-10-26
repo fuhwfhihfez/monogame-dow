@@ -12,6 +12,7 @@ static public class Collection
     static public List<Text> Texts = [];
     static public List<Button> Buttons = [];
     static public List<Frame> Frames = [];
+    static public List<Sprite> Sprites = [];
     static public List<Hitbox> Hitboxes = [];
     static public List<UIContainer> Containers = [];
     static public List<IUIElement> Elements = [];
