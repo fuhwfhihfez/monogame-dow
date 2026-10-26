@@ -40,6 +40,33 @@ static public class Collection
     }
 }
 
+public struct Thickness
+{
+    public float Left;
+    public float Top;
+    public float Right;
+    public float Bottom;
+
+    public Thickness(float uniform)
+    {
+        Left = Top = Right = Bottom = uniform;
+    }
+
+    public Thickness(float vertical, float horizontal)
+    {
+        Left = Right = horizontal;
+        Top = Bottom = vertical;
+    }
+
+    public Thickness(float top, float right, float bottom, float left)
+    {
+        Top = top;
+        Right = right;
+        Bottom = bottom;
+        Left = left;
+    }
+}
+
 public interface IUIElement
 {
     Vector2 Position { get; set; }

@@ -63,7 +63,7 @@ public class Button : IUIElement
     public Vector2 AbsolutePosition => Parent == null ? Position : Parent.AbsolutePosition + Position;
     public Vector2 DrawPosition => AbsolutePosition - Size * Anchor;
 
-    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, Vector2 anchor = default, int zIndex = 0, Func<string> textUpdater = null, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
+    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, Thickness padding = default, Vector2 anchor = default, int zIndex = 0, Func<string> textUpdater = null, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
     {
 
         Text = new Text(
@@ -72,7 +72,7 @@ public class Button : IUIElement
             font,
             textColor,
             AnchorPosition.TopLeft,
-            zIndex + 1,
+            zIndex,
             textUpdater,
             () => GetTextPosition()
         );
@@ -81,10 +81,19 @@ public class Button : IUIElement
         Size = size;
         Anchor = anchor;
         BackgroundColor = backgroundColor * backgroundOpacity;
+        ZIndex = zIndex - 1;
 
         _OnClick = onClick;
         _OnHover = onHover;
         Visible = true;
+
+        Size += new Vector2(padding.Left + padding.Right, padding.Top + padding.Bottom);
+
+        float textXSize = font.MeasureString(textString).X;
+        float requiredWidth = textXSize + padding.Left + padding.Right;
+
+        if (requiredWidth > Size.X)
+            Size = new Vector2(requiredWidth, Size.Y);
 
         UpdateTextPosition();
 

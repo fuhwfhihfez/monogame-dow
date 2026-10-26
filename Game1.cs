@@ -45,7 +45,7 @@ class Game1 : Game
                 font,
                 Color.DarkRed,
                 default,
-                2
+                4
             ),
             new Button(
                 "This is a button",
@@ -54,8 +54,9 @@ class Game1 : Game
                 Color.GreenYellow,
                 new Vector2(150, 50),
                 Position.SizeRel(0.5f, 0.5f, new Vector2(350, 350)),
+                new UI.Thickness(10),
                 AnchorPosition.Center,
-                2
+                5
             )
         ];
 
@@ -65,6 +66,7 @@ class Game1 : Game
             new Vector2(350, 350),
             Color.Gray,
             AnchorPosition.Center,
+            new UI.Thickness(20),
             0.5f
         );
 
@@ -75,6 +77,7 @@ class Game1 : Game
             Color.GreenYellow,
             new Vector2(150, 50),
             position,
+            default,
             AnchorPosition.Center,
             2
         );

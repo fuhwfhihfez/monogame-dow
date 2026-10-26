@@ -38,21 +38,23 @@ public class UIContainer : IUIElement
     }
     public Vector2 Anchor { get; set; }
     public IUIElement InteractionTarget { get; set; }
-    public Vector2 AbsolutePosition => BackgroundFrame.DrawPosition;
-    public Vector2 DrawPosition => BackgroundFrame.DrawPosition;
+    public Thickness Padding;
+    public Vector2 AbsolutePosition => BackgroundFrame.DrawPosition + new Vector2(Padding.Left, Padding.Top);
+    public Vector2 DrawPosition => BackgroundFrame.DrawPosition + new Vector2(Padding.Left, Padding.Top);
 
     private Vector2 _dragOffset;
 
-    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, Vector2 anchor, float opacity = 1f)
+    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, Vector2 anchor, Thickness padding = default, float opacity = 1f)
     {
         Children = children;
         Anchor = anchor;
+        Padding = padding;
 
         Visible = true;
 
         BackgroundFrame = new Frame(
             position,
-            size,
+            size + new Vector2(padding.Left + padding.Right, padding.Top + padding.Bottom),
             backgroundColor,
             anchor,
             0,
