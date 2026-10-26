@@ -41,9 +41,10 @@ class Game1 : Game
         List<IUIElement> children = [
             new Text(
                 "This is my container",
-                position,
+                Position.SizeRel(0, 0, new Vector2(350, 350)),
                 font,
                 Color.DarkRed,
+                default,
                 2
             ),
             new Button(
@@ -52,7 +53,8 @@ class Game1 : Game
                 Color.Black,
                 Color.GreenYellow,
                 new Vector2(150, 50),
-                position + new Vector2(150, 50),
+                Position.SizeRel(0.5f, 0.5f, new Vector2(350, 350)),
+                AnchorPosition.Center,
                 2
             )
         ];
@@ -62,14 +64,19 @@ class Game1 : Game
             position,
             new Vector2(350, 350),
             Color.Gray,
+            AnchorPosition.Center,
             0.5f
         );
 
-        new Frame(
-            Position.ScreenRel(0.5f, 0.5f),
-            new Vector2(150, 150),
+        new Button(
+            "This is a centered button",
+            font,
             Color.Black,
-            10
+            Color.GreenYellow,
+            new Vector2(150, 50),
+            position,
+            AnchorPosition.Center,
+            2
         );
     }
 

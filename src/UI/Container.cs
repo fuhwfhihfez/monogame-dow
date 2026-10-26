@@ -13,17 +13,7 @@ public class UIContainer : IUIElement
     public Frame BackgroundFrame;
     public Vector2 Position { 
         get => BackgroundFrame.Position;
-        set
-        {
-            Vector2 delta = value - BackgroundFrame.Position;
-            BackgroundFrame.Position = value;
-
-            foreach (IUIElement child in Children)
-            {
-                if (child != BackgroundFrame)
-                    child.Position += delta;
-            }
-        }
+        set => BackgroundFrame.Position = value;
     }
     public Vector2 Size { 
         get => BackgroundFrame.Size;
@@ -47,12 +37,16 @@ public class UIContainer : IUIElement
         }
     }
     public Vector2 Anchor { get; set; }
+    public IUIElement InteractionTarget { get; set; }
+    public Vector2 AbsolutePosition => BackgroundFrame.DrawPosition;
+    public Vector2 DrawPosition => BackgroundFrame.DrawPosition;
 
     private Vector2 _dragOffset;
 
-    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, float opacity = 1f)
+    public UIContainer(List<IUIElement> children, Vector2 position, Vector2 size, Color backgroundColor, Vector2 anchor, float opacity = 1f)
     {
         Children = children;
+        Anchor = anchor;
 
         Visible = true;
 
@@ -60,23 +54,25 @@ public class UIContainer : IUIElement
             position,
             size,
             backgroundColor,
+            anchor,
             0,
             opacity
         );
 
-        Anchor = AnchorPosition.Center;
-
         ZIndex = 0;
 
-        foreach (IUIElement child in children)
+        foreach (IUIElement child in Children)
         {
             child.Parent = this;
+            child.InteractionTarget = this;
 
             if (child.ZIndex < ZIndex)
                 ZIndex = child.ZIndex - 1;
         }
-        BackgroundFrame.Parent = this;
 
+        BackgroundFrame.InteractionTarget = this;
+
+        Collection.Containers.Add(this);
         Collection.Elements.Add(this);
     }
 

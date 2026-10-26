@@ -10,65 +10,83 @@ namespace Dow.UI;
 public class Button : IUIElement
 {
     public UIContainer Parent { get; set; }
-    public Frame Frame;
     public Text Text;
     public string TextString
     {
         get => Text.TextString;
-        set => Text.TextString = value;
-    }
-    public int ZIndex { get; set; }
-    public Vector2 Position
-    {
-        get => Frame.Rectangle.Position;
         set
         {
-            Frame.Rectangle.Position = value;
+            Text.TextString = value;
             UpdateTextPosition();
         }
     }
+
+    private Vector2 _size;
     public Vector2 Size
     {
-        get => Frame.Rectangle.Size;
-        set => Frame.Rectangle.Size = value;
+        get => _size;
+        set
+        {
+            _size = value;
+            UpdateTextPosition();
+        }
+    }
+
+    private Vector2 _anchor;
+    public Vector2 Anchor
+    {
+        get => _anchor;
+        set
+        {
+            _anchor = value;
+            UpdateTextPosition();
+        }
+    }
+    public int ZIndex { get; set; }
+    private Vector2 _position;
+    public Vector2 Position
+    {
+        get => _position;
+        set
+        {
+            _position = value;
+            UpdateTextPosition();
+        }
     }
     public bool Visible { get; set; }
-    public Vector2 Anchor { get; set; }
+    public IUIElement InteractionTarget { get; set; }
+
+    public Color BackgroundColor;
 
     public Action _OnClick;
     public Action<bool> _OnHover;
-    public Vector2 DrawPosition => Position - Size * Anchor;
+    public Vector2 AbsolutePosition => Parent == null ? Position : Parent.AbsolutePosition + Position;
+    public Vector2 DrawPosition => AbsolutePosition - Size * Anchor;
 
-    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, int zIndex = 0, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
+    public Button(string textString, SpriteFont font, Color textColor, Color backgroundColor, Vector2 size, Vector2 position, Vector2 anchor = default, int zIndex = 0, Func<string> textUpdater = null, Action onClick = null, Action<bool> onHover = null, float backgroundOpacity = 1f)
     {
-
-        Frame = new Frame(
-            position,
-            size,
-            backgroundColor,
-            zIndex-1,
-            backgroundOpacity
-        );
 
         Text = new Text(
             textString,
-            Vector2.Zero,
+            position,
             font,
             textColor,
-            zIndex
+            AnchorPosition.TopLeft,
+            zIndex + 1,
+            textUpdater,
+            () => GetTextPosition()
         );
 
-        UpdateTextPosition();
-
-        Position = position;
+        _position = position;
         Size = size;
+        Anchor = anchor;
+        BackgroundColor = backgroundColor * backgroundOpacity;
 
         _OnClick = onClick;
         _OnHover = onHover;
-
-        Anchor = AnchorPosition.TopLeft;
-
         Visible = true;
+
+        UpdateTextPosition();
 
         Collection.Buttons.Add(this);
         Collection.Elements.Add(this);
@@ -77,10 +95,17 @@ public class Button : IUIElement
     void UpdateTextPosition()
     {
         Vector2 stringDims = Text.Font.MeasureString(TextString);
-        Vector2 padding = Size / 2f;
-        Vector2 offset = stringDims / 2f;
+        Text.Size = stringDims;
+        Text.Position = DrawPosition + (Size - stringDims) / 2f;
+        Text.Anchor = AnchorPosition.TopLeft;
+    }
 
-        Text.Position = Position + padding - offset;
+    Vector2 GetTextPosition()
+    {
+        Vector2 stringDims = Text.Font.MeasureString(TextString);
+        Text.Size = stringDims;
+
+        return DrawPosition + (Size - stringDims) / 2f;
     }
 
     public void OnHover(bool Enter)
@@ -96,15 +121,8 @@ public class Button : IUIElement
     public void Draw(SpriteBatch _spriteBatch)
     {
         _spriteBatch.FillRectangle(
-            Frame.Rectangle,
-            Frame.BackgroundColor
-        );
-
-        _spriteBatch.DrawString(
-            Text.Font,
-            Text.TextString,
-            Text.Position,
-            Text.TextColor
+            new RectangleF(DrawPosition.X, DrawPosition.Y, Size.X, Size.Y),
+            BackgroundColor
         );
     }
 }

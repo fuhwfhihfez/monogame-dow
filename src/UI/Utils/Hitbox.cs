@@ -12,6 +12,10 @@ public class Hitbox : IUIElement
     public Vector2 Size { get; set; }
     public bool Visible { get; set; }
     public Vector2 Anchor { get; set; }
+    public IUIElement InteractionTarget { get; set; }
+
+    public Vector2 AbsolutePosition => Parent == null ? Position : Parent.AbsolutePosition + Position;
+    public Vector2 DrawPosition => AbsolutePosition - Size * Anchor;
     public Action _OnClick;
     public Action<bool> _OnHover;
     public Action _OnHold;

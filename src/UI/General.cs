@@ -13,6 +13,7 @@ static public class Collection
     static public List<Button> Buttons = [];
     static public List<Frame> Frames = [];
     static public List<Hitbox> Hitboxes = [];
+    static public List<UIContainer> Containers = [];
     static public List<IUIElement> Elements = [];
 
     public static void Update()
@@ -45,6 +46,9 @@ public interface IUIElement
     Vector2 Size { get; }
     UIContainer Parent { get; set; }
     Vector2 Anchor { get; set; }
+    Vector2 AbsolutePosition { get; }
+    IUIElement InteractionTarget { get; set; }
+    Vector2 DrawPosition { get; }
     bool Visible { get; set; }
 
     int ZIndex { get; set; }

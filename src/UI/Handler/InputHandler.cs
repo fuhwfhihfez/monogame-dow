@@ -26,10 +26,10 @@ public static class InputHandler
                 continue;
 
             bool isHovering =
-                position.X >= element.Position.X &&
-                position.X <= element.Position.X + element.Size.X &&
-                position.Y >= element.Position.Y &&
-                position.Y <= element.Position.Y + element.Size.Y;
+                position.X >= element.DrawPosition.X &&
+                position.X <= element.DrawPosition.X + element.Size.X &&
+                position.Y >= element.DrawPosition.Y &&
+                position.Y <= element.DrawPosition.Y + element.Size.Y;
 
             if (isHovering &&
                 (topmost == null || element.ZIndex > topmost.ZIndex))
@@ -46,10 +46,8 @@ public static class InputHandler
         MouseState mouse = Mouse.GetState();
         Vector2 mousePos = mouse.Position.ToVector2();
 
-        if (hoveredElement != null && hoveredElement.Parent != null)
-        {
-            hoveredElement = hoveredElement.Parent;
-        }
+        if (hoveredElement != null && hoveredElement.InteractionTarget != null)
+            hoveredElement = hoveredElement.InteractionTarget;
 
         bool justPressed =
             mouse.LeftButton == ButtonState.Pressed &&
